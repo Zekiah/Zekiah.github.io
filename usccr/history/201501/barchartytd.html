@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+			.title {
+				font-family: 'Open Sans', sans-serif;
+				font-size: 36px;
+			}
+
+.bar {
+  fill: lightblue;
+}
+
+.bar:hover {
+  fill: #191919;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 7px;
+  background: steelblue;
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: steelblue;
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+</style>
+<body>
+<span class="title" id="titlespan3">USCCR Complaints</span>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="js/config.js"></script>
+<script>
+$('#titlespan3').text('Total Complaints by State, ' + global_year + ' Year to Date');
+</script>
+<script>
+//$('#titlespan').text('Total Complaints by State ' + global_month + ' ' + global_year);
+
+var margin = {top: 20, right: 20, bottom: 30, left: 100},
+    width = 860 - margin.left - margin.right,
+    height = 800 - margin.top - margin.bottom;
+
+var y = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var x = d3.scale.linear()
+    .range([0, height]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<span style='color:white;font: 10px sans-serif;'>" + d.state + ":</span> <span style='color:white;font: 10px sans-serif;'>" + d.ytd + "</span>";
+  });
+	
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+svg.call(tip);
+d3.csv("data/" + global_tablesource, type, function(error, data) {
+  y.domain(data.map(function(d) { return d.state; }));
+  x.domain([0, d3.max(data, function(d) { return d.ytd; })]);
+
+  svg.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("y", function(d) { return y(d.state); })
+      .attr("height", y.rangeBand())
+      .attr("x", function(d) { return x(0); })
+      .attr("width", function(d) { return x(d.ytd); })
+	  .on('mouseover', tip.show)
+      .on('mouseout', tip.hide);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end");
+      //.text("Total");
+
+//state names as hyperlinks
+//d3.selectAll("text")
+//    .filter(function(d){ return typeof(d) == "string"; })
+//    .style("cursor", "pointer")
+//    .on("click", function(d){
+//        document.location.href = "http://www.example.com/" + d;
+//    });
+
+});
+
+function type(d) {
+  d.ytd = +d.ytd;
+  return d;
+}
+
+</script>

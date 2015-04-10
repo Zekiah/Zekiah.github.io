@@ -9,3 +9,4 @@ var global_tablesource = "usccr_table_source_2015_03.csv";
 
 $('link[rel="issues"]').attr("href", "data/" + global_geodata_issue);
 $('link[rel="basis"]').attr("href", "data/" + global_geodata_basis);
+

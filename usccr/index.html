@@ -1,6 +1,7 @@
 
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Cache-Control" content="no-store" />
 
 <title>Complaints by State</title>
 <style>
@@ -12,16 +13,23 @@
 <div align="center">
 <table border="0" width="990px" id="table1" style="border-collapse: collapse">
 	<tbody><tr>
-		<td width="18%">
+		<td width="18%" bgcolor="silver">
 		<p align="center">
-		<img border="0" src="./index_files/logo color.PNG" width="105" height="107"></p></td>
+		<img border="0" src="./index_files/logo_color_small.png" width="105" height="107"></p></td>
 		<td width="76%" bgcolor="#000066">
 		<p align="center" style="margin-top: 0; margin-bottom: 0">
-		<font color="#FFFFFF" style="font-size: 22pt"><b>Complaints by State
+		<font color="#FFFFFF" style="font-size: 22pt; font-family: sans-serif"><b>Complaints by State
 		</b></font></p>
 		<p align="center" style="margin-top: 0; margin-bottom: 0">
 		<font color="#FFFFFF" style="font-size: 22pt"><b></b></font></p>
 		</td>
+	</tr>
+	<tr>
+	<td colspan="2">
+	<br/>
+	<span style="font-family: sans-serif">Explore Historical Data:</span> <select id="selhistory" name="selhistory" size="1">
+	<select>
+	</td>
 	</tr>
 	<tr>
 		<td colspan="2" height="660px" bgcolor="#FFFFFF">
@@ -58,6 +66,7 @@
 	</tbody></table>
 
 </div>
-
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="js/history.js"></script>
 </body>
 </html>
