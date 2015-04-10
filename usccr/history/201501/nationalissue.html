@@ -68,6 +68,7 @@
 		<div id="map" style="height:600px;width:100%;background-color: '#FFFFFF';"></div>
 		<div id='map-overlay-hawaii'></div>
 		<div id='map-overlay-alaska'></div>
+		<span id="basisgeolink" style="font-family: 'Open Sans', sans-serif;" align="right">Download this data: <a id="geodownload" href="#">GeoJSON</a> | <a id="csvdownload" href="#">CSV</a></span>
 		<!--<script src="scripts/md_county_q6_2012.js"></script>-->
 		<script>
 		var mqurl = 'http://blog.geomusings.com/assets/demos/mdq6/data/tiles/NaturalEarth/md/{z}/{x}/{y}.png'; //'http://a0.acetate.geoiq.com/tiles/acetate-bg/{z}/{x}/{y}.png'; // 'http://{s}.mqcdn.com/naip/{z}/{x}/{y}.png';
@@ -305,4 +306,6 @@ function centroid(polygon) {
 
 legend.addTo(map);
 $('#titlespan').text(global_month + ' ' + global_year + ' by Issue');
+$('#geodownload').attr('href', 'data/' + global_geodata_issue);
+$('#csvdownload').attr('href', 'data/' + global_tabledata_issue);
 		</script>
