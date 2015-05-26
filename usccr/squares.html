@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.counties {
+  fill: #000000;
+}
+
+.subunit-label {
+  fill: #000;
+  fill-opacity: 1.0;
+  font-size: 16px;
+  font-family: sans-serif;
+  font-weight: bold;
+  text-anchor: middle;
+  text-shadow:
+    -1px -1px 0 #ffffff,
+    1px -1px 0 #ffffff,
+    -1px 1px 0 #ffffff,
+    1px 1px 0 #ffffff;
+}
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/queue.v1.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<body>
+<script>
+        //Width and height
+
+
+
+		////////////////////////////////////////////////////
+		
+		d3.json(
+    "data/us_squares_basis.geojson",
+    function (json) {
+	//alert(JSON.stringify(json));
+    //dimensions
+    var w = 980;
+    var h = 480;
+	var center = d3.geo.centroid(json);
+    var svg = d3.select("body").append("svg")
+    .attr("width", w)
+    .attr("height", h);
+
+	var projection = d3.geo.equirectangular()
+    .scale(2500)
+    //.translate([0, 0])
+    .precision(.77)
+	.center(center)
+	;
+	
+	var breaks = [20, 15, 10, 5];
+	var fills = ['#006d2c','#2ca25f','#66c2a4','#b2e2e2'];
+	var textcolors = ['#ffffff','#ffffff','#000000','#000000'];
+    //create geo.path object, set the projection to merator bring it to the svg-viewport
+    var path = d3.geo.path()
+        .projection(projection);
+
+    //draw svg lines of the boundries
+    svg.append("g")
+        .selectAll("path")
+        .data(json.features)
+        .enter()
+        .append("path")
+        .attr("d", path)
+		.style("fill", function(d){
+			//alert(JSON.stringify(d));
+			var ytd = d.properties.ytd;
+			var retval = "#edf8fb";
+			for (i = 0; i < breaks.length; i++) { 
+				if (ytd > breaks[i]){
+					retval = fills[i];
+					break;
+				}
+			}
+			return retval;
+		});
+	//	           .on("mouseover", function(d) {
+    //            d3.select(this).style("fill","#6C0");})
+    //        .on("mouseout", function(d) {
+    //            d3.select(this).style("fill","#000000");});
+	svg.selectAll(".subunit-label")
+    .data(json.features)
+  .enter().append("text")
+    .attr("class", function(d) { return "subunit-label " + d.id; })
+    .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+    .attr("dy", ".35em")
+	/*	.style("fill", function(d){
+			//alert(JSON.stringify(d));
+			var ytd = d.properties.ytd;
+			var retval = "#000000";
+			for (i = 0; i < breaks.length; i++) { 
+				if (ytd > breaks[i]){
+					retval = textcolors[i];
+					break;
+				}
+			}
+			return retval;
+		})*/
+		.text(function(d) { return d.properties.abbr; });
+    });
+		
+    </script>
+	</body>
