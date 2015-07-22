@@ -1,7 +1,8 @@
 var global_history = {"201501": {"path": "history/201501", "label": "January 2015"},
 						"201502": {"path": "history/201502", "label": "February 2015"},
 						"201503": {"path": "history/201503", "label": "March 2015"},
-						"201504": {"path": "history/201504", "label": "April 2015"}};
+						"201504": {"path": "history/201504", "label": "April 2015"},
+						"201505": {"path": "history/201505", "label": "May 2015"}};
 
 function loadHistory(){
     var temp = global_history;
