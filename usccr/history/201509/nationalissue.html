@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+		<link rel="issues" type="application/json" href="">
+		<link rel="basis" type="application/json" href="">
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.css" />
+		<link rel="stylesheet" href="js/labels/leaflet.label.css" />
+		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+		<script src="http://leaflet.github.io/Leaflet.label/leaflet.label-src.js"></script>
+		<script src="js/config.js"></script>
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+		
+		<!--[if lte IE 8]>
+			<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.ie.css" />
+		<![endif]-->
+		<style>
+			.title {
+				font-family: 'Open Sans', sans-serif;
+				font-size: 20px;
+			}
+			body {
+				font-family: 'PT Serif', serif;
+				font-size: 12px;
+			}
+		.info {
+			padding: 6px 8px;
+			font: 12px/14px Arial, Helvetica, sans-serif;
+			background: white;
+			background: rgba(255,255,255,0.8);
+			box-shadow: 0 0 15px rgba(0,0,0,0.2);
+			border-radius: 5px;
+		}
+		.info h4 {
+			margin: 0 0 5px;
+			color: #777;
+		}
+.legend {
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}	
+
+#map-overlay-hawaii {
+      position:absolute;
+      left:100px;
+      bottom:35px;
+      width:120px;
+      height:120px;
+      border:1px solid #fff;
+  }	
+
+ #map-overlay-alaska {
+      position:absolute;
+      left: 225px;
+      bottom:35px;
+      width:120px;
+      height:120px;
+      border:1px solid #fff;
+	  
+		</style>
+	<span class="title" id="titlespan">Complaints - December, 2014</span>
+		<div id="map" style="height:600px;width:100%;background-color: '#FFFFFF';"></div>
+		<div id='map-overlay-hawaii'></div>
+		<div id='map-overlay-alaska'></div>
+		<span id="basisgeolink" style="font-family: 'Open Sans', sans-serif;" align="right">Download this data: <a id="geodownload" href="#">GeoJSON</a> | <a id="csvdownload" href="#">CSV</a></span>
+		<!--<script src="scripts/md_county_q6_2012.js"></script>-->
+		<script>
+		var mqurl = 'http://blog.geomusings.com/assets/demos/mdq6/data/tiles/NaturalEarth/md/{z}/{x}/{y}.png'; //'http://a0.acetate.geoiq.com/tiles/acetate-bg/{z}/{x}/{y}.png'; // 'http://{s}.mqcdn.com/naip/{z}/{x}/{y}.png';
+		//var mqSubdomains = new Array("a0","a1","a2","a3");
+		var mqattribution = 'County data via Esri, Bridge data via National Bridge Inventory'; //'Tiles Courtesy GeoIQ. Licensed under a Creative Commons Attribution 3.0 License.';
+		var acetate = new L.TileLayer(mqurl, {minZoom: 7, maxZoom: 9, attribution: mqattribution}); //, subdomains: mqSubdomains});
+
+		function getColor(d) {
+			return d > 30 ? '#084594' :
+				d > 25  ? '#2171B5' :
+				d > 20  ? '#4292C6' :
+				d > 15  ? '#6BAED6' :
+				d > 10   ? '#9ECAE1' :
+				d > 5   ? '#C6DBEF' :
+				d > 0   ? '#EFF3FF' :
+                     '#C0C0C0';
+		}
+		
+		function style(feature) {
+			return {
+				fillColor: getColor(feature.properties.total),
+				weight: 0.5,
+				opacity: 1,
+				color: 'black',
+				dashArray: '3',
+				fillOpacity: 0.85
+			};
+		}
+		
+		function highlightFeature(e) {
+			var layer = e.target;
+			//var props = layer.valueOf();
+			//alert(props);
+			/*layer.setStyle({
+				weight: 5,
+				color: '#666',
+				dashArray: '',
+				fillOpacity: 0.7
+			});
+
+			if (!L.Browser.ie && !L.Browser.opera) {
+				layer.bringToFront();
+			}*/
+			info.update(layer.feat.properties);
+		}
+		
+		//var geojson;
+
+		
+		function resetHighlight(e) {
+			//geojson.resetStyle(e.target);
+			info.update();
+		}
+		
+		function zoomToFeature(e) {
+			map.fitBounds(e.target.getBounds());
+		}
+		
+		var overlayOptions = {
+			zoomControl: false,
+			attributionControl: false
+		};		
+		var map = L.map('map').setView([41.2586111, -95.9375], 4); //.addLayer(acetate);
+		var mapOverlayHawaii = L.map('map-overlay-hawaii', overlayOptions).fitBounds([[18.542116654448996,-161.03759765625],[22.573438264572406,-154.22607421875]]);
+		var mapOverlayAlaska = L.map('map-overlay-alaska', overlayOptions).fitBounds([[52.72702815704774,-169.15625],[70.95622888185527,-128.61718749999999]]);
+		
+		mapOverlayHawaii.dragging.disable();
+		mapOverlayHawaii.touchZoom.disable();
+		mapOverlayHawaii.doubleClickZoom.disable();
+		mapOverlayHawaii.scrollWheelZoom.disable();
+
+		mapOverlayAlaska.dragging.disable();
+		mapOverlayAlaska.touchZoom.disable();
+		mapOverlayAlaska.doubleClickZoom.disable();
+		mapOverlayAlaska.scrollWheelZoom.disable();
+
+		//L.marker([41.2586111, -95.9375]).bindLabel('A sweet static label!', { noHide: true }).addTo(map);
+		//alert(q6data);
+		function onEachFeature(feature, layer) {
+		var ctr;
+
+     if ( feature.geometry.type === "MultiPolygon" ) {
+		ctr = centroid(feature.geometry);
+			var label = new L.Label();
+			label.setContent(feature.properties.state_abbr);
+			//var pt = feature.geometry.getBounds();
+			//alert(JSON.stringify(pt));
+			label.setLatLng(L.latLng(ctr[1], ctr[0]));
+			if(feature.properties.state_abbr === 'HI'){
+				mapOverlayHawaii.showLabel(label);
+			}
+			else if (feature.properties.state_abbr === 'AK'){
+				mapOverlayAlaska.showLabel(label);
+			}
+			else{
+				map.showLabel(label);
+				
+			}
+		}			
+		var pg = L.multiPolygon(feature.geometry);
+			//polygon.bindLabel('MultiPolygon dynamic label').addTo(map);
+			Object.defineProperty(layer, "feat", {
+				value: feature,
+				writable: true,
+				enumerable: true,
+				configurable: true
+			});
+			layer.on({
+				mouseover: highlightFeature,
+				mouseout: resetHighlight,
+				click: zoomToFeature
+			});
+
+		}
+
+		$.getJSON($('link[rel="issues"]').attr("href"), function(data) {
+			var geojson = L.geoJson(data, {
+			style: style,
+			onEachFeature: onEachFeature
+			});
+			//alert(JSON.stringify(data));
+		geojson.addTo(map);
+		});
+		
+ 		$.getJSON($('link[rel="issues"]').attr("href"), function(data) {
+			var geojson = L.geoJson(data, {
+			style: style,
+			onEachFeature: onEachFeature
+			});
+			//alert(JSON.stringify(data));
+			//var newObject = jQuery.extend({}, geojson);
+		//geojson.addTo(map);
+		geojson.addTo(mapOverlayHawaii);
+		});
+
+		$.getJSON($('link[rel="issues"]').attr("href"), function(data) {
+			var geojson = L.geoJson(data, {
+			style: style,
+			onEachFeature: onEachFeature
+			});
+			//alert(JSON.stringify(data));
+			//var newObject = jQuery.extend({}, geojson);
+		//geojson.addTo(map);
+		geojson.addTo(mapOverlayAlaska);
+		});	
+		
+		//geojson.addTo(map);
+		//);
+		
+		
+		//geojson = L.geoJson(q6data, {
+		//	style: style,
+		//	onEachFeature: onEachFeature
+		//}).addTo(map);
+		
+		var info = L.control();
+
+		info.onAdd = function (map) {
+			this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+			this.update();
+			return this._div;
+		};
+
+		// method that we will use to update the control based on feature properties passed
+		info.update = function (props) {
+		   if (props){
+			//var tot = props.votefor + props.voteagainst;
+			//var pctfor = (props.votefor/tot) * 100;
+			//var pctagainst = (props.voteagainst/tot) * 100;
+			}
+			this._div.innerHTML = '<h4>Complaints</h4>' +  (props ?
+				'<b>' + props.state + '</b><br />' + 
+				'<table>' +
+				'<tr><td><strong>' + global_month_abbr + '</strong></td><td style="width: 75px;text-align:right;"><strong>' + global_year + ' YTD</strong></td><td></td></tr>' +
+				'<tr><td style="text-align: right;">' + props.total + '</td><td style="text-align: right;">' + props.ytd + '</td><td>Total</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.aj + '</td><td style="text-align: right;">' + props.ytd_aj + '</td><td>Adminstration of Justice</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.ed + '</td><td style="text-align: right;">' + props.ytd_ed + '</td><td>Education</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.e + '</td><td style="text-align: right;">' + props.ytd_e + '</td><td>Employment</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.fp + '</td><td style="text-align: right;">' + props.ytd_fp + '</td><td>Federal Programs</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.hac + '</td><td style="text-align: right;">' + props.ytd_hac + '</td><td>Hate Crimes</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.hec + '</td><td style="text-align: right;">' + props.ytd_hec + '</td><td>Health Care</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.h + '</td><td style="text-align: right;">' + props.ytd_h + '</td><td>Housing</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.hr + '</td><td style="text-align: right;">' + props.ytd_hr + '</td><td>Human Rights</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.nj + '</td><td style="text-align: right;">' + props.ytd_nj + '</td><td>No Jurisdiction</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.o + '</td><td style="text-align: right;">' + props.ytd_o + '</td><td>Other</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.pb + '</td><td style="text-align: right;">' + props.ytd_pb + '</td><td>Police Brutality</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.pm + '</td><td style="text-align: right;">' + props.ytd_pm + '</td><td>Police Misconduct</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.pc + '</td><td style="text-align: right;">' + props.ytd_pc + '</td><td>Prison Conditions</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.pr + '</td><td style="text-align: right;">' + props.ytd_pr + '</td><td>Prisoners\' Rights</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.pa + '</td><td style="text-align: right;">' + props.ytd_pa + '</td><td>Public Accomodations</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.unk + '</td><td style="text-align: right;">' + props.ytd_unk + '</td><td>Unknown</td></tr>' +
+				'<tr><td style="text-align: right;">' + props.vr + '</td><td style="text-align: right;">' + props.ytd_vr + '</td><td>Voting Rights</td></tr>' +
+				'</table>' 
+				: 'Hover over a state');
+		};
+
+		info.addTo(map);
+		
+		var legend = L.control({position: 'bottomleft'});
+
+legend.onAdd = function (map) {
+
+    var div = L.DomUtil.create('div', 'info legend'),
+        grades = [0, 5, 10, 15, 20, 25, 30],
+        labels = [];
+
+    // loop through our density intervals and generate a label with a colored square for each interval
+    for (var i = 0; i < grades.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+    }
+
+    return div;
+};
+
+function centroid(polygon) {
+            var i, j, len, p1, p2, f, area, x, y,
+                points = polygon.coordinates[0][0];
+            // polygon centroid algorithm; only uses the first ring if there are multiple
+
+            area = x = y = 0;
+
+            for (i = 0, len = points.length, j = len - 1; i < len; j = i++) {
+                    p1 = points[i];
+                    p2 = points[j];
+                    f = p1[1] * p2[0] - p2[1] * p1[0];
+                    x += (p1[0] + p2[0]) * f;
+                    y += (p1[1] + p2[1]) * f;
+                    area += f * 3;
+            }
+
+            return ([x / area, y / area]);
+    }
+
+legend.addTo(map);
+$('#titlespan').text(global_month + ' ' + global_year + ' by Issue');
+$('#geodownload').attr('href', 'data/' + global_geodata_issue);
+$('#csvdownload').attr('href', 'data/' + global_tabledata_issue);
+		</script>
