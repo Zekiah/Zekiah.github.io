@@ -1,10 +1,11 @@
-var global_history = {"201501": {"path": "history/201501", "label": "January 2015"},
-						"201502": {"path": "history/201502", "label": "February 2015"},
-						"201503": {"path": "history/201503", "label": "March 2015"},
-						"201504": {"path": "history/201504", "label": "April 2015"},
-						"201505": {"path": "history/201505", "label": "May 2015"},
-						"201506": {"path": "history/201506", "label": "June 2015"},
-						"201507": {"path": "history/201507", "label": "July 2015"}};
+var global_history = {"201501": {"path": "history/201501", "label": "1/1 - 1/25/2015"},
+						"201502": {"path": "history/201502", "label": "1/26 - 2/20/2015"},
+						"201503": {"path": "history/201503", "label": "2/23 - 3/20/2015"},
+						"201504": {"path": "history/201504", "label": "3/23 - 4/24/2015"},
+						"201505": {"path": "history/201505", "label": "4/27 - 5/22/2015"},
+						"201506": {"path": "history/201506", "label": "5/25 - 6/19/2015"},
+						"201507": {"path": "history/201507", "label": "6/22 - 7/14/2015"}},
+						"201508": {"path": "history/201508", "label": "7/20 - 8/14/2015"}};
 
 function loadHistory(){
     var temp = global_history;
