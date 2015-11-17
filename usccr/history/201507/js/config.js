@@ -1,5 +1,5 @@
-var global_month = "July";
-var global_month_abbr = "July";
+var global_month = "6/22 - 7/14";
+var global_month_abbr = "6/22 - 7/14";
 var global_year = "2015";
 var global_geodata_issue = "usccr_issue_2015_07.geojson";
 var global_tabledata_issue = "usccr_issue_2015_07.csv";
