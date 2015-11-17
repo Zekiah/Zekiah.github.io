@@ -14,10 +14,10 @@ function loadHistory(){
     var meh = $('#selhistory'); 
 		//alert(meh);
     //select.find('option').remove(); 
-	meh.append('<option value=' + 'meh' + '>' + 'Select Month...' + '</option>');
+	meh.append('<option value=' + 'meh' + '>' + 'Select Period...' + '</option>');
 	var current = window.location.toString().toLowerCase();
 	if (current.indexOf('history') > -1){
-		meh.append('<option value=' + "" + '>' + 'Current Month' + '</option>');
+		meh.append('<option value=' + "" + '>' + 'Current Period' + '</option>');
 	}
     $.each(temp,function(key, value) 
 	{
