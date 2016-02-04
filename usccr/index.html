@@ -22,11 +22,40 @@ border-left:1px solid #999999;
 border-right:1px solid #999999;
 }
 </style>
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 <link href="http://www.usccr.gov/css/ccr.css" rel="stylesheet" type="text/css" />
 <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<script type="text/javascript">
+var qstring = "";
+function getUrlVars()
+{
+    var vars = [], hash;
+	
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	//alert(hashes);
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
+
+function setVars(){
+	var parms = getUrlVars();
+	if (parms["month"]){
+		var m = parms["month"];
+		var y = parms["year"];
+		var a = parms["abbrev"];
+		qstring = "?month=" + m +"&year=" + y + "&abbrev=" + a;
+	}
+}
+setVars();
+</script>
 </head>
 
-<body style="zoom: 1;">
+<body style="zoom: 1;" onload="loadDivs()">
 <div id="header">
 <div id="banner">
 <div id="bg">
@@ -105,10 +134,8 @@ border-right:1px solid #999999;
 	</tr>
 	<tr>
 		<td colspan="2" height="660px" bgcolor="#FFFFFF">
-<!--<a href="issuemap.html">View map of complaints by issue...</a><br />
-<a href="basismap.html">View map of complaints by basis...</a>-->
-		<!--<iframe style="width: 100%;height: 100%;border: none;" src="barchart2.html" />-->
-		<iframe style="width: 100%;height: 100%;border: none;" src="nationalbasis.html"></iframe>	
+		<div id="basisdiv"></div>
+		<!--<iframe style="width: 100%;height: 100%;border: none;" src="nationalbasis.html"></iframe>	-->
 		</td>
 	</tr>
 		<tr>
@@ -116,7 +143,8 @@ border-right:1px solid #999999;
 		</tr>
 		<tr>
 		<td colspan="2" height="660px" bgcolor="#FFFFFF">
-		<iframe style="width: 100%;height: 100%;border: none;" src="nationalissue.html"></iframe>		
+		<div id="issuediv"></div>
+		<!--<iframe style="width: 100%;height: 100%;border: none;" src="nationalissue.html"></iframe>	-->		
 		</td>
 	</tr>
 		<tr>
@@ -124,7 +152,8 @@ border-right:1px solid #999999;
 		</tr>
 		<tr>
 		<td colspan="2" height="880px" bgcolor="#FFFFFF">
-		<iframe style="width: 100%;height: 100%;border: none;" src="barchart2.html"></iframe>		
+		<div id="chart2div"></div>
+		<!--<iframe style="width: 100%;height: 100%;border: none;" src="barchart2.html"></iframe>		-->
 		</td>
 	</tr>
 		<tr>
@@ -132,13 +161,65 @@ border-right:1px solid #999999;
 		</tr>
 		<tr>
 		<td colspan="2" height="880px" bgcolor="#FFFFFF">
-		<iframe style="width: 100%;height: 100%;border: none;" src="barchartytd.html"></iframe>		
+		<div id="chartytddiv"></div>
+		<!--<iframe style="width: 100%;height: 100%;border: none;" src="barchartytd.html"></iframe>		-->
 		</td>
 	</tr>
 	</tbody></table>
 
 </div>
-<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="js/history.js"></script>
+<script type="text/javascript">
+function loadDivs(){
+	loadBasisDiv();
+	loadIssueDiv();
+	loadChart2Div();
+	loadChartYtdDiv();
+}
+
+function loadBasisDiv(){
+    var link = "nationalbasis.html" + qstring;
+	var iframe = document.createElement('iframe');
+	iframe.frameBorder=0;
+	iframe.width="100%";
+	iframe.height="100%";
+	iframe.id="randomid1";
+	iframe.setAttribute("src", link);
+	document.getElementById("basisdiv").appendChild(iframe);
+}
+
+function loadIssueDiv(){
+    var link = "nationalissue.html" + qstring;
+	var iframe = document.createElement('iframe');
+	iframe.frameBorder=0;
+	iframe.width="100%";
+	iframe.height="100%";
+	iframe.id="randomid2";
+	iframe.setAttribute("src", link);
+	document.getElementById("issuediv").appendChild(iframe);
+}
+
+function loadChart2Div(){
+    var link = "barchart2.html" + qstring;
+	var iframe = document.createElement('iframe');
+	iframe.frameBorder=0;
+	iframe.width="100%";
+	iframe.height="100%";
+	iframe.id="randomid3";
+	iframe.setAttribute("src", link);
+	document.getElementById("chart2div").appendChild(iframe);
+}
+
+function loadChartYtdDiv(){
+    var link = "barchartytd.html" + qstring;
+	var iframe = document.createElement('iframe');
+	iframe.frameBorder=0;
+	iframe.width="100%";
+	iframe.height="100%";
+	iframe.id="randomid4";
+	iframe.setAttribute("src", link);
+	document.getElementById("chartytddiv").appendChild(iframe);
+}
+</script>
 </body>
 </html>
