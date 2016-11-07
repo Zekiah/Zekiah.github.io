@@ -14,7 +14,7 @@ var global_history = {"201501": {"path": "./?month=01&year=2015&abbrev=1%2F1%20-
 						"201602": {"path": "./?month=02&year=2016&abbrev=2%2F3%20-%202%2F21", "label": "2/3/2016 - 2/21/2016"},
 						"201603": {"path": "./?month=03&year=2016&abbrev=2%2F22%20-%203%2F18", "label": "2/22/2016 - 3/18/2016"},
 						"201604": {"path": "./?month=04&year=2016&abbrev=4%2F25%20-%205%2F20", "label": "4/25/2016 - 5/20/2016"},
-						"201605": {"path": "./?month=05&year=2016&abbrev=5%2F23%20-%206%2F17", "label": "4/25/2016 - 5/20/2016"}
+						"201605": {"path": "./?month=05&year=2016&abbrev=5%2F23%20-%206%2F17", "label": "5/23/2016 - 6/17/2016"}
 						};
 
 function loadHistory(){
